@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     paragraph: {
         fontSize: 18,
         color: '#fff',
-        fontStyle: ''
+        marginBottom: 20,
     },
     scrollView: {
         padding: 20,

@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#2c786c',
     },
     button: {
-        backgroundColor: '#2c786c',
+        backgroundColor: '#33cccc',
         padding: 20,
         borderRadius: 10,
         marginBottom: 10,
@@ -75,6 +75,8 @@ const styles = StyleSheet.create({
     },
     paragraphContainer: {
         padding: 20,
+        backgroundColor: '#996600',
+        marginBottom: 20,
     },
     paragraph: {
         fontSize: 18,
