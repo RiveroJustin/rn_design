@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
     paragraphContainer: {
         padding: 20,
         backgroundColor: '#996600',
+        marginBottom: 20,
     },
     paragraph: {
         fontSize: 18,

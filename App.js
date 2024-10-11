@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './app/screens/LoginScreen';
 import AboutScreen from './app/screens/AboutScreen';
 import HomeScreen from './app/screens/HomeScreen';
+import { StatusBar } from 'react-native';
+import { header } from 'express/lib/request';
 
 const Stack = createNativeStackNavigator();
 
