@@ -1,5 +1,13 @@
 {
   "expo": {
+    "plugins": [
+    [
+      "expo-font",
+        {
+          "fonts": ["node_modules/@expo-google-fonts/inter/Hanuman-Black.ttf"]
+        }
+      ]
+    ],
     "name": "rn_design",
     "slug": "rn_design",
     "version": "1.0.0",
@@ -22,6 +30,9 @@
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }

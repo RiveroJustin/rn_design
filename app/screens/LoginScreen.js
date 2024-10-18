@@ -1,7 +1,13 @@
 import React from 'react';
 import { ImageBackground, View, TouchableOpacity, Text, TextInput, StyleSheet } from 'react-native';
+import { useFonts } from 'expo-font';
 
 function LoginScreen({ navigation }) {
+      
+    const [loaded] = useFonts({
+        'Hanuman-Black': require('../assets/fonts/Hanuman-Black.ttf'),
+    })
+    
     return (
         <ImageBackground style={styles.container} source={require('../assets/bg.jpg')}>
             <View style={styles.inputContainer}>
@@ -18,6 +24,7 @@ function LoginScreen({ navigation }) {
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
+            <View style={{fontSize: 200, fontFamily: 'Hanuman-Black'}}>APP</View>
         </ImageBackground>
     );
 }
