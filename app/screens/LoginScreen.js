@@ -6,6 +6,7 @@ function LoginScreen({ navigation }) {
       
     const [loaded] = useFonts({
         'Hanuman-Black': require('../assets/fonts/Hanuman-Black.ttf'),
+        'PlayfairDisplay-Black': require('../assets/fonts/PlayfairDisplay-Black.ttf'),
     })
     
     return (
