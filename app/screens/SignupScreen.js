@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ImageBackground,
   View,
@@ -6,10 +6,11 @@ import {
   Text,
   TextInput,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { useFonts } from "expo-font";
 
-function LoginScreen({ navigation }) {
+function SignupScreen({ navigation }) {
   const [loaded] = useFonts({
     "Hanuman-Black": require("../assets/fonts/Hanuman-Black.ttf"),
     "PlayfairDisplay-Black": require("../assets/fonts/PlayfairDisplay-Black.ttf"),
@@ -18,33 +19,62 @@ function LoginScreen({ navigation }) {
     return null;
   }
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [retypePassword, setRetypePassword] = useState("");
+
+  const handleSignup = () => {
+    if (
+      !email.includes("@") ||
+      password !== retypePassword ||
+      password.length < 8
+    ) {
+      Alert.alert("Try again", "Please enter valid email and matching passwords");
+    } else {
+      Alert.alert("Success", "Account created successfully");
+    }
+  };
+
   return (
     <ImageBackground
       style={styles.container}
       source={require("../assets/bg.jpg")}
     >
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Email" />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
       </View>
-      <View style={[styles.inputContainer, { marginBottom: 20 }]}>
+      <View style={[styles.inputContainer]}>
         <TextInput
           style={styles.input}
           placeholder="Password"
           secureTextEntry={true}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+        />
+      </View>
+      <View style={[styles.inputContainer, { marginBottom: 20 }]}>
+        <TextInput
+          style={styles.input}
+          placeholder="Retype Password"
+          secureTextEntry={true}
+          value={retypePassword}
+          onChangeText={(text) => setRetypePassword(text)}
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("HomeScreen")}
-        >
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>Create</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate("SignupScreen")}
+          onPress={() => navigation.navigate("LoginScreen")}
         >
-          <Text style={styles.buttonText}>Sign Up</Text>
+          <Text style={styles.buttonText}>Return</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -84,4 +114,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default SignupScreen;
+
