@@ -9,6 +9,8 @@ import {
   Alert,
 } from "react-native";
 import { useFonts } from "expo-font";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { app, auth } from "../../firebaseConfig";
 
 function SignupScreen({ navigation }) {
   const [loaded] = useFonts({
@@ -29,9 +31,23 @@ function SignupScreen({ navigation }) {
       password !== retypePassword ||
       password.length < 8
     ) {
-      Alert.alert("Try again", "Please enter valid email and matching passwords");
+      Alert.alert(
+        "Try again",
+        "Please enter valid email and matching passwords"
+      );
     } else {
-      Alert.alert("Success", "Account created successfully");
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          Alert.alert("Success", "Account created successfully");
+          setEmail("");
+          setPassword("");
+          setRetypePassword("");
+          navigation.navigate("LoginScreen");
+        })
+        .catch((error) => {
+          Alert.alert("Error", "Error creating user: " + error.message);
+        });
     }
   };
 
@@ -115,4 +131,6 @@ const styles = StyleSheet.create({
 });
 
 export default SignupScreen;
+
+
 
