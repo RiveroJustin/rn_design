@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { ImageBackground, View, TouchableOpacity, Text, TextInput, StyleSheet, Alert } from "react-native";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 import { useFonts } from "expo-font";
 
-const LoginScreen = ({ navigation }) => {
+const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [fontsLoaded, error] = useFonts({
     HanumanBlack: require("../assets/fonts/Hanuman-Black.ttf"),
     PlayfairDisplayBlack: require("../assets/fonts/PlayfairDisplay-Black.ttf"),
@@ -18,16 +20,28 @@ const LoginScreen = ({ navigation }) => {
     }
   }, [error]);
 
-  const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log("User logged in successfully:", user);
-        navigation.navigate("HomeScreen");
-      })
-      .catch((error) => {
-        Alert.alert("Error", "Invalid credentials");
-      });
+  const isFormValid = () =>
+    email.includes("@") && password === confirmPassword && password.length >= 8;
+
+  const handleSignup = async () => {
+    if (!isFormValid()) {
+      Alert.alert(
+        "Try again",
+        "Please enter a valid email and matching passwords with at least 8 characters"
+      );
+      return;
+    }
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      Alert.alert("Success", "Account created successfully");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      navigation.navigate("LoginScreen");
+    } catch (error) {
+      Alert.alert("Error", `Error creating user: ${error.message}`);
+    }
   };
 
   if (!fontsLoaded) {
@@ -47,24 +61,33 @@ const LoginScreen = ({ navigation }) => {
           onChangeText={setEmail}
         />
       </View>
-      <View style={[styles.inputContainer, { marginBottom: 20 }]}>
+      <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           placeholder="Password"
-          secureTextEntry={true}
+          secureTextEntry
           value={password}
           onChangeText={setPassword}
         />
       </View>
+      <View style={[styles.inputContainer, styles.lastInputContainer]}>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+      </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>Create</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate("SignupScreen")}
+          onPress={() => navigation.navigate("LoginScreen")}
         >
-          <Text style={styles.buttonText}>Sign Up</Text>
+          <Text style={styles.buttonText}>Return</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -77,6 +100,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  inputContainer: {
+    marginBottom: 10,
+  },
+  lastInputContainer: {
+    marginBottom: 20,
+  },
   input: {
     width: 300,
     backgroundColor: "white",
@@ -84,14 +113,12 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     padding: 10,
     borderRadius: 10,
-    marginVertical: 10,
     fontFamily: "HanumanBlack",
   },
   button: {
     backgroundColor: "#7cccc7",
     padding: 20,
     borderRadius: 10,
-    marginBottom: 10,
     marginHorizontal: 10,
     width: 100,
   },
@@ -104,5 +131,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default SignupScreen;
 
