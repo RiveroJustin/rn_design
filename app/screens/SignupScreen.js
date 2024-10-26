@@ -1,85 +1,82 @@
-import React, { useState } from "react";
-import {
-  ImageBackground,
-  View,
-  TouchableOpacity,
-  Text,
-  TextInput,
-  StyleSheet,
-  Alert,
-} from "react-native";
-import { useFonts } from "expo-font";
+import React, { useState, useEffect } from "react";
+import { ImageBackground, View, TouchableOpacity, Text, TextInput, StyleSheet, Alert } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { app, auth } from "../../firebaseConfig";
+import { auth } from "../../firebaseConfig";
+import { useFonts } from "expo-font";
 
-function SignupScreen({ navigation }) {
-  const [loaded] = useFonts({
-    "Hanuman-Black": require("../assets/fonts/Hanuman-Black.ttf"),
-    "PlayfairDisplay-Black": require("../assets/fonts/PlayfairDisplay-Black.ttf"),
-  });
-  if (!loaded) {
-    return null;
-  }
-
+const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [retypePassword, setRetypePassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSignup = () => {
-    if (
-      !email.includes("@") ||
-      password !== retypePassword ||
-      password.length < 8
-    ) {
+  const [fontsLoaded, error] = useFonts({
+    HanumanBlack: require("../assets/fonts/Hanuman-Black.ttf"),
+    PlayfairDisplayBlack: require("../assets/fonts/PlayfairDisplay-Black.ttf"),
+  });
+
+  useEffect(() => {
+    if (error) {
+      console.error("Error loading fonts:", error);
+    }
+  }, [error]);
+
+  const isFormValid = () =>
+    email.includes("@") && password === confirmPassword && password.length >= 8;
+
+  const handleSignup = async () => {
+    if (!isFormValid()) {
       Alert.alert(
         "Try again",
-        "Please enter valid email and matching passwords"
+        "Please enter a valid email and matching passwords with at least 8 characters"
       );
-    } else {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          Alert.alert("Success", "Account created successfully");
-          setEmail("");
-          setPassword("");
-          setRetypePassword("");
-          navigation.navigate("LoginScreen");
-        })
-        .catch((error) => {
-          Alert.alert("Error", "Error creating user: " + error.message);
-        });
+      return;
+    }
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      Alert.alert("Success", "Account created successfully");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      navigation.navigate("LoginScreen");
+    } catch (error) {
+      Alert.alert("Error", `Error creating user: ${error.message}`);
     }
   };
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <ImageBackground
       style={styles.container}
-      source={require("../assets/bg.jpg")}
+      source={require("../assets/images/bg.jpg")}
     >
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           placeholder="Email"
           value={email}
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={setEmail}
         />
       </View>
-      <View style={[styles.inputContainer]}>
+      <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           placeholder="Password"
-          secureTextEntry={true}
+          secureTextEntry
           value={password}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={setPassword}
         />
       </View>
-      <View style={[styles.inputContainer, { marginBottom: 20 }]}>
+      <View style={[styles.inputContainer, styles.lastInputContainer]}>
         <TextInput
           style={styles.input}
-          placeholder="Retype Password"
-          secureTextEntry={true}
-          value={retypePassword}
-          onChangeText={(text) => setRetypePassword(text)}
+          placeholder="Confirm Password"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
         />
       </View>
       <View style={styles.buttonContainer}>
@@ -95,13 +92,19 @@ function SignupScreen({ navigation }) {
       </View>
     </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  inputContainer: {
+    marginBottom: 10,
+  },
+  lastInputContainer: {
+    marginBottom: 20,
   },
   input: {
     width: 300,
@@ -110,14 +113,12 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     padding: 10,
     borderRadius: 10,
-    marginVertical: 10,
-    fontFamily: "Hanuman-Black",
+    fontFamily: "HanumanBlack",
   },
   button: {
     backgroundColor: "#7cccc7",
     padding: 20,
     borderRadius: 10,
-    marginBottom: 10,
     marginHorizontal: 10,
     width: 100,
   },
@@ -126,11 +127,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     textAlign: "center",
-    fontFamily: "PlayfairDisplay-Black",
+    fontFamily: "PlayfairDisplayBlack",
   },
 });
 
 export default SignupScreen;
-
-
 

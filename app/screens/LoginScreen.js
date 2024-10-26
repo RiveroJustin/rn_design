@@ -1,43 +1,63 @@
-import React from "react";
-import {
-  ImageBackground,
-  View,
-  TouchableOpacity,
-  Text,
-  TextInput,
-  StyleSheet,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { ImageBackground, View, TouchableOpacity, Text, TextInput, StyleSheet, Alert } from "react-native";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
 import { useFonts } from "expo-font";
 
-function LoginScreen({ navigation }) {
-  const [loaded] = useFonts({
-    "Hanuman-Black": require("../assets/fonts/Hanuman-Black.ttf"),
-    "PlayfairDisplay-Black": require("../assets/fonts/PlayfairDisplay-Black.ttf"),
+const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fontsLoaded, error] = useFonts({
+    HanumanBlack: require("../assets/fonts/Hanuman-Black.ttf"),
+    PlayfairDisplayBlack: require("../assets/fonts/PlayfairDisplay-Black.ttf"),
   });
-  if (!loaded) {
+
+  useEffect(() => {
+    if (error) {
+      console.error("Error loading fonts:", error);
+    }
+  }, [error]);
+
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log("User logged in successfully:", user);
+        navigation.navigate("HomeScreen");
+      })
+      .catch((error) => {
+        Alert.alert("Error", "Invalid credentials");
+      });
+  };
+
+  if (!fontsLoaded) {
     return null;
   }
 
   return (
     <ImageBackground
       style={styles.container}
-      source={require("../assets/bg.jpg")}
+      source={require("../assets/images/bg.jpg")}
     >
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Email" />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+        />
       </View>
       <View style={[styles.inputContainer, { marginBottom: 20 }]}>
         <TextInput
           style={styles.input}
           placeholder="Password"
           secureTextEntry={true}
+          value={password}
+          onChangeText={setPassword}
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("HomeScreen")}
-        >
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -49,7 +69,7 @@ function LoginScreen({ navigation }) {
       </View>
     </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -65,7 +85,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginVertical: 10,
-    fontFamily: "Hanuman-Black",
+    fontFamily: "HanumanBlack",
   },
   button: {
     backgroundColor: "#7cccc7",
@@ -80,8 +100,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     textAlign: "center",
-    fontFamily: "PlayfairDisplay-Black",
+    fontFamily: "PlayfairDisplayBlack",
   },
 });
 
 export default LoginScreen;
+
