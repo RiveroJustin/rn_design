@@ -1,31 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ImageBackground, View, TouchableOpacity, Text, TextInput, StyleSheet } from 'react-native';
-import { useFonts } from 'expo-font';
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { firebaseConfig } from "../../firebaseConfig.js";
 
 function LoginScreen({ navigation }) {
-      
-    const [loaded] = useFonts({
-        'Hanuman-Black': require('../assets/fonts/Hanuman-Black.ttf'),
-        'PlayfairDisplay-Black': require('../assets/fonts/PlayfairDisplay-Black.ttf'),
-    })
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleLogin = async () => {
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            navigation.navigate('HomeScreen');
+        } catch (error) {
+            alert(error.message);
+        }
+    }
     
     return (
         <ImageBackground style={styles.container} source={require('../assets/bg.jpg')}>
             <View style={styles.inputContainer}>
-                <TextInput style={styles.input} placeholder="Username" />
+                <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />
             </View>
             <View style={[styles.inputContainer, {marginBottom: 20}]}>
-                <TextInput style={styles.input} placeholder="Password" secureTextEntry={true} />
+                <TextInput style={styles.input} placeholder="Password" secureTextEntry={true} value={password} onChangeText={setPassword} />
             </View>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HomeScreen')}>
+                <TouchableOpacity style={styles.button} onPress={handleLogin}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Sign Up</Text>
-                </TouchableOpacity>
             </View>
-            <View style={{fontSize: 200, fontFamily: 'Hanuman-Black'}}>APP</View>
         </ImageBackground>
     );
 }
@@ -62,3 +68,4 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
+
