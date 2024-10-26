@@ -14,6 +14,9 @@ function LoginScreen({ navigation }) {
     "Hanuman-Black": require("../assets/fonts/Hanuman-Black.ttf"),
     "PlayfairDisplay-Black": require("../assets/fonts/PlayfairDisplay-Black.ttf"),
   });
+  if (!loaded) {
+    return null;
+  }
 
   return (
     <ImageBackground
@@ -74,6 +77,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     textAlign: "center",
+    fontFamily: "PlayfairDisplay-Black",
   },
 });
 
