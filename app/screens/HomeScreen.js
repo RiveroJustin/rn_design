@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,43 +6,41 @@ import {
   TouchableOpacity,
   TextInput,
   FlatList,
+  ImageBackground,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { db } from "../../firebaseConfig";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  doc,
-  deleteDoc,
-} from "firebase/firestore";
+import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "firebase/firestore";
 
-function HomeScreen() {
+const HomeScreen = () => {
   const navigation = useNavigation();
-  const [cruds, setCruds] = useState([]);
+  const [todos, setTodos] = useState([]);
   const [editingId, setEditingId] = useState(null);
-  const [editedContent, setEditedContent] = useState("");
+  const [editedTodo, setEditedTodo] = useState("");
 
   useEffect(() => {
-    const fetchCruds = async () => {
-      const crudsRef = collection(db, "cruds");
-      const querySnapshot = await getDocs(crudsRef);
-      const cruds = [];
-      querySnapshot.forEach((doc) => {
-        cruds.push({ ...doc.data(), id: doc.id });
-      });
-      setCruds(cruds);
+    const fetchTodos = async () => {
+      try {
+        const todosRef = collection(db, "todos");
+        const querySnapshot = await getDocs(todosRef);
+        const todos = [];
+        querySnapshot.forEach((doc) => {
+          todos.push({ ...doc.data(), id: doc.id });
+        });
+        setTodos(todos);
+      } catch (error) {
+        console.error("Error fetching documents:", error);
+      }
     };
-    fetchCruds();
+    fetchTodos();
   }, []);
 
   const handleCreate = async () => {
     try {
-      const newDocRef = await addDoc(collection(db, "cruds"), {
+      const newDocRef = await addDoc(collection(db, "todos"), {
         content: "",
       });
-      setCruds([...cruds, { id: newDocRef.id, content: "" }]);
+      setTodos([...todos, { id: newDocRef.id, content: "" }]);
     } catch (error) {
       console.error("Error creating document:", error);
     }
@@ -50,17 +48,17 @@ function HomeScreen() {
 
   const handleUpdate = async (id) => {
     try {
-      const crudsRef = collection(db, "cruds");
-      const docRef = doc(crudsRef, id);
+      const todosRef = collection(db, "todos");
+      const docRef = doc(todosRef, id);
       await updateDoc(docRef, {
-        content: editedContent,
+        content: editedTodo,
       });
-      const updatedCruds = cruds.map((crud) =>
-        crud.id === id ? { ...crud, content: editedContent } : crud
+      const updatedTodos = todos.map((todo) =>
+        todo.id === id ? { ...todo, content: editedTodo } : todo
       );
-      setCruds(updatedCruds);
+      setTodos(updatedTodos);
       setEditingId(null);
-      setEditedContent("");
+      setEditedTodo("");
     } catch (error) {
       console.error("Error updating document:", error);
     }
@@ -68,9 +66,9 @@ function HomeScreen() {
 
   const handleDelete = async (id) => {
     try {
-      const crudsRef = collection(db, "cruds");
-      await deleteDoc(doc(crudsRef, id));
-      setCruds(cruds.filter((crud) => crud.id !== id));
+      const todosRef = collection(db, "todos");
+      await deleteDoc(doc(todosRef, id));
+      setTodos(todos.filter((todo) => todo.id !== id));
     } catch (error) {
       console.error("Error deleting document:", error);
     }
@@ -81,9 +79,9 @@ function HomeScreen() {
       {editingId === item.id ? (
         <TextInput
           style={styles.todoItemInput}
-          placeholder="Add List"
-          value={editedContent}
-          onChangeText={setEditedContent}
+          placeholder="Add Todo"
+          value={editedTodo}
+          onChangeText={setEditedTodo}
         />
       ) : (
         <Text style={styles.todoItem}>{item.content}</Text>
@@ -101,7 +99,7 @@ function HomeScreen() {
             style={styles.todoItemButton}
             onPress={() => {
               setEditingId(item.id);
-              setEditedContent(item.content);
+              setEditedTodo(item.content);
             }}
           >
             <Text style={styles.todoItemButtonText}>Edit</Text>
@@ -118,16 +116,21 @@ function HomeScreen() {
   );
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={cruds}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.todoListContainer}
-      />
-      <TouchableOpacity style={styles.button} onPress={handleCreate}>
-        <Text style={styles.buttonText}>Create</Text>
-      </TouchableOpacity>
+    <ImageBackground
+      style={styles.container}
+      source={require("../assets/images/bg.jpg")}
+    >
+      <View style={styles.listContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleCreate}>
+          <Text style={styles.buttonText}>Create</Text>
+        </TouchableOpacity>
+        <FlatList
+          data={todos}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          contentContainerStyle={styles.todoListContainer}
+        />
+      </View>
       <View style={styles.navContainer}>
         <TouchableOpacity
           style={styles.button2}
@@ -142,14 +145,13 @@ function HomeScreen() {
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#786c3b",
   },
   todoListContainer: {
     padding: 20,
@@ -183,10 +185,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   button: {
+    width: 300,
     backgroundColor: "#33cccc",
     padding: 20,
     borderRadius: 10,
-    margin: 10,
+    marginBottom: 10,
+    marginTop: 60,
   },
   button2: {
     backgroundColor: "#33cccc",
@@ -195,6 +199,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginHorizontal: 10,
     width: 100,
+  },
+  listContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   navContainer: {
     flexDirection: "row",
@@ -213,3 +221,6 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+
+
+

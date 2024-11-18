@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 function AboutScreen() {
@@ -14,47 +7,13 @@ function AboutScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={[styles.scrollView, { marginBottom: 100 }]}>
-        <View style={styles.paragraphContainer}>
-          <Image
-            source={require("../assets/images/img1.jpg")}
-            style={styles.image}
-          />
-          <Text style={styles.paragraph}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur.
-          </Text>
-        </View>
-        <View style={styles.paragraphContainer}>
-          <Image
-            source={require("../assets/images/img1.jpg")}
-            style={styles.image}
-          />
-          <Text style={styles.paragraph}>
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-            officia deserunt mollit anim id est laborum. Sed ut perspiciatis
-            unde omnis iste natus error sit voluptatem accusantium doloremque
-            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
-            veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-          </Text>
-        </View>
-        <View style={styles.paragraphContainer}>
-          <Image
-            source={require("../assets/images/img1.jpg")}
-            style={styles.image}
-          />
-          <Text style={styles.paragraph}>
-            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
-            fugit, sed quia consequuntur magni dolores eos qui ratione
-            voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem
-            ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non
-            numquam eius modi tempora incidunt ut labore et dolore magna aliqua.
-          </Text>
-        </View>
+      <ScrollView style={styles.scrollView}>
+        {PARAGRAPHS.map(({ image, paragraph }, index) => (
+          <View key={index} style={styles.paragraphContainer}>
+            <Image source={image} style={styles.image} />
+            <Text style={styles.paragraph}>{paragraph}</Text>
+          </View>
+        ))}
       </ScrollView>
       <View style={styles.navContainer}>
         <TouchableOpacity
@@ -74,13 +33,28 @@ function AboutScreen() {
   );
 }
 
+const PARAGRAPHS = [
+  {
+    image: require("../assets/images/img1.jpg"),
+    paragraph:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+  },
+  {
+    image: require("../assets/images/img1.jpg"),
+    paragraph:
+      "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
+  },
+  {
+    image: require("../assets/images/img1.jpg"),
+    paragraph:
+      "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magna aliqua.",
+  },
+];
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#786c3b",
-  },
-  itemContainer: {
-    flex: 1,
   },
   navContainer: {
     flexDirection: "row",
@@ -123,3 +97,4 @@ const styles = StyleSheet.create({
 });
 
 export default AboutScreen;
+
