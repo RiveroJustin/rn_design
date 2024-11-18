@@ -20,29 +20,29 @@ import {
 
 function HomeScreen() {
   const navigation = useNavigation();
-  const [cruds, setCruds] = useState([]);
+  const [todos, setTodos] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editedContent, setEditedContent] = useState("");
 
   useEffect(() => {
-    const fetchCruds = async () => {
-      const crudsRef = collection(db, "cruds");
-      const querySnapshot = await getDocs(crudsRef);
-      const cruds = [];
+    const fetchTodos = async () => {
+      const todosRef = collection(db, "todos");
+      const querySnapshot = await getDocs(todosRef);
+      const todos = [];
       querySnapshot.forEach((doc) => {
-        cruds.push({ ...doc.data(), id: doc.id });
+        todos.push({ ...doc.data(), id: doc.id });
       });
-      setCruds(cruds);
+      setTodos(todos);
     };
-    fetchCruds();
+    fetchTodos();
   }, []);
 
   const handleCreate = async () => {
     try {
-      const newDocRef = await addDoc(collection(db, "cruds"), {
-        content: "Add List",
+      const newTodoRef = await addDoc(collection(db, "todos"), {
+        content: "",
       });
-      setCruds([...cruds, { id: newDocRef.id, content: "Add List" }]);
+      setTodos([...todos, { id: newTodoRef.id, content: "" }]);
     } catch (error) {
       console.error("Error creating document:", error);
     }
@@ -50,15 +50,15 @@ function HomeScreen() {
 
   const handleUpdate = async (id) => {
     try {
-      const crudsRef = collection(db, "cruds");
-      const docRef = doc(crudsRef, id);
+      const todosRef = collection(db, "todos");
+      const docRef = doc(todosRef, id);
       await updateDoc(docRef, {
         content: editedContent,
       });
-      const updatedCruds = cruds.map((crud) =>
-        crud.id === id ? { ...crud, content: editedContent } : crud
+      const updatedTodos = todos.map((todo) =>
+        todo.id === id ? { ...todo, content: editedContent } : todo
       );
-      setCruds(updatedCruds);
+      setTodos(updatedTodos);
       setEditingId(null);
       setEditedContent("");
     } catch (error) {
@@ -68,9 +68,9 @@ function HomeScreen() {
 
   const handleDelete = async (id) => {
     try {
-      const crudsRef = collection(db, "cruds");
-      await deleteDoc(doc(crudsRef, id));
-      setCruds(cruds.filter((crud) => crud.id !== id));
+      const todosRef = collection(db, "todos");
+      await deleteDoc(doc(todosRef, id));
+      setTodos(todos.filter((todo) => todo.id !== id));
     } catch (error) {
       console.error("Error deleting document:", error);
     }
@@ -81,6 +81,7 @@ function HomeScreen() {
       {editingId === item.id ? (
         <TextInput
           style={styles.todoItemInput}
+          placeholder="Add List"
           value={editedContent}
           onChangeText={setEditedContent}
         />
@@ -119,7 +120,7 @@ function HomeScreen() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={cruds}
+        data={todos}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.todoListContainer}
@@ -179,3 +180,4 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+
