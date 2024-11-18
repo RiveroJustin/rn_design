@@ -20,29 +20,29 @@ import {
 
 function HomeScreen() {
   const navigation = useNavigation();
-  const [todos, setTodos] = useState([]);
+  const [cruds, setCruds] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editedContent, setEditedContent] = useState("");
 
   useEffect(() => {
-    const fetchTodos = async () => {
-      const todosRef = collection(db, "todos");
-      const querySnapshot = await getDocs(todosRef);
-      const todos = [];
+    const fetchCruds = async () => {
+      const crudsRef = collection(db, "cruds");
+      const querySnapshot = await getDocs(crudsRef);
+      const cruds = [];
       querySnapshot.forEach((doc) => {
-        todos.push({ ...doc.data(), id: doc.id });
+        cruds.push({ ...doc.data(), id: doc.id });
       });
-      setTodos(todos);
+      setCruds(cruds);
     };
-    fetchTodos();
+    fetchCruds();
   }, []);
 
   const handleCreate = async () => {
     try {
-      const newTodoRef = await addDoc(collection(db, "todos"), {
+      const newDocRef = await addDoc(collection(db, "cruds"), {
         content: "",
       });
-      setTodos([...todos, { id: newTodoRef.id, content: "" }]);
+      setCruds([...cruds, { id: newDocRef.id, content: "" }]);
     } catch (error) {
       console.error("Error creating document:", error);
     }
@@ -50,15 +50,15 @@ function HomeScreen() {
 
   const handleUpdate = async (id) => {
     try {
-      const todosRef = collection(db, "todos");
-      const docRef = doc(todosRef, id);
+      const crudsRef = collection(db, "cruds");
+      const docRef = doc(crudsRef, id);
       await updateDoc(docRef, {
         content: editedContent,
       });
-      const updatedTodos = todos.map((todo) =>
-        todo.id === id ? { ...todo, content: editedContent } : todo
+      const updatedCruds = cruds.map((crud) =>
+        crud.id === id ? { ...crud, content: editedContent } : crud
       );
-      setTodos(updatedTodos);
+      setCruds(updatedCruds);
       setEditingId(null);
       setEditedContent("");
     } catch (error) {
@@ -68,9 +68,9 @@ function HomeScreen() {
 
   const handleDelete = async (id) => {
     try {
-      const todosRef = collection(db, "todos");
-      await deleteDoc(doc(todosRef, id));
-      setTodos(todos.filter((todo) => todo.id !== id));
+      const crudsRef = collection(db, "cruds");
+      await deleteDoc(doc(crudsRef, id));
+      setCruds(cruds.filter((crud) => crud.id !== id));
     } catch (error) {
       console.error("Error deleting document:", error);
     }
@@ -120,7 +120,7 @@ function HomeScreen() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={todos}
+        data={cruds}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.todoListContainer}
