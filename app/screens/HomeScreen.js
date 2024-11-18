@@ -128,6 +128,20 @@ function HomeScreen() {
       <TouchableOpacity style={styles.button} onPress={handleCreate}>
         <Text style={styles.buttonText}>Create</Text>
       </TouchableOpacity>
+      <View style={styles.navContainer}>
+        <TouchableOpacity
+          style={styles.button2}
+          onPress={() => navigation.navigate("AboutScreen")}
+        >
+          <Text style={styles.buttonText}>About Us</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button2}
+          onPress={() => navigation.navigate("LoginScreen")}
+        >
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -174,10 +188,28 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10,
   },
+  button2: {
+    backgroundColor: "#33cccc",
+    padding: 20,
+    borderRadius: 10,
+    marginBottom: 10,
+    marginHorizontal: 10,
+    width: 100,
+  },
+  navContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 10,
+    backgroundColor: "#2c786c",
+  },
   buttonText: {
     textAlign: "center",
   },
 });
 
 export default HomeScreen;
-
