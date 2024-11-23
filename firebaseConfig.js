@@ -7,10 +7,10 @@ import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBtW0_CwQQYHOhlL65xkqpMhwLPncd1Y3g",
-  authDomain: "fir-integration-87f97.firebaseapp.com",
-  databaseURL: "https://fir-integration-87f97-default-rtdb.firebaseio.com/",
-  projectId: "fir-integration-87f97",
-  storageBucket: "fir-integration-87f97.appspot.com",
+  authDomain: "realtimedb-bd53d.firebaseapp.com",
+  databaseURL: "https://realtimedb-bd53d-default-rtdb.firebaseio.com/",
+  projectId: "realtimedb-bd53d",
+  storageBucket: "realtimedb-bd53d.appspot.com",
   messagingSenderId: "989490278968",
   appId: "1:989490278968:web:741006edf3e34a421eeccd",
   measurementId: "G-KSKYK6MYM1",
